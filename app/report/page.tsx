@@ -14,6 +14,8 @@ import { Badge } from "@/components/ui/badge"
 import { Navbar } from "@/components/navbar"
 import { Footer } from "@/components/footer"
 import { MapPin, Upload, Loader2, CheckCircle } from "lucide-react"
+import * as exifr from "exifr"
+import Tesseract from "tesseract.js"
 
 type ReportType = "WildAlert" | "PawChain" | "EcoPath" | "StraySafe" | "AbuseReport"
 
@@ -36,6 +38,8 @@ export default function ReportPage() {
   const [isGettingLocation, setIsGettingLocation] = useState(false)
   const router = useRouter()
   const [isGenerating, setIsGenerating] = useState(false)
+  const [isImageValid, setIsImageValid] = useState(false)
+  const [currentGps, setCurrentGps] = useState<{ latitude: number; longitude: number } | null>(null)
 
   const reportTypeDescriptions = {
     WildAlert: "Report wildlife in immediate danger or distress",
@@ -124,33 +128,104 @@ export default function ReportPage() {
     setDescription(descriptions[type])
   }
 
-  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-  if (e.target.files) {
-    const newFiles = Array.from(e.target.files)
-    setFiles((prev) => [...prev, ...newFiles])
+function getDistance(lat1: number, lon1: number, lat2: number, lon2: number) {
+  const R = 6371e3
+  const φ1 = lat1 * Math.PI/180
+  const φ2 = lat2 * Math.PI/180
+  const Δφ = (lat2-lat1) * Math.PI/180
+  const Δλ = (lon2-lon1) * Math.PI/180
+  const a = Math.sin(Δφ/2) * Math.sin(Δφ/2) +
+            Math.cos(φ1) * Math.cos(φ2) *
+            Math.sin(Δλ/2) * Math.sin(Δλ/2)
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a))
+  return R * c // meters
+}
 
-    // Send first file to Gemini API
-    const formData = new FormData()
-    formData.append("file", newFiles[0])
+function isWithin30Min(imageTime: Date) {
+  const now = new Date()
+  const diffMs = Math.abs(now.getTime() - imageTime.getTime())
+  return diffMs / (1000 * 60) <= 30
+}
+// inside ReportPage:
+const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  if (!e.target.files) return
+  const newFile = e.target.files[0]
+  setFiles([newFile])
 
-    try {
-      setIsGenerating(true)
-      const res = await fetch("/api/generate-description", {
-        method: "POST",
-        body: formData,
-      })
-      const data = await res.json()
-      if (data.description) {
-        setAiDescription(data.description)
-        setDescription(data.description)
+  try {
+    // --- Try EXIF ---
+    const gps = await exifr.gps(newFile)
+    const exifData = await exifr.parse(newFile, ["DateTimeOriginal"])
+
+    let imageLat: number | null = gps?.latitude || null
+    let imageLon: number | null = gps?.longitude || null
+    let imageTime: Date | null = exifData?.DateTimeOriginal ? new Date(exifData.DateTimeOriginal) : null
+
+    // --- If no EXIF GPS, try OCR ---
+    if (!imageLat || !imageLon) {
+      console.log("⚠️ No EXIF GPS found, trying OCR...")
+      const { data: { text } } = await Tesseract.recognize(newFile, "eng")
+
+      console.log("📝 OCR Text:", text)
+
+      const gpsRegex = /Lat\s([\d\.\-]+)°\s*Long\s([\d\.\-]+)°/
+      const timeRegex = /\d{2}\/\d{2}\/\d{4}\s+\d{2}:\d{2}:\d{2}\s+(?:AM|PM)/
+
+      const gpsMatch = gpsRegex.exec(text)
+      const timeMatch = timeRegex.exec(text)
+
+      if (gpsMatch) {
+        imageLat = parseFloat(gpsMatch[1])
+        imageLon = parseFloat(gpsMatch[2])
       }
-    } catch (error) {
-      console.error("Error generating AI description:", error)
-    } finally {
-      setIsGenerating(false)
+      if (timeMatch) {
+        imageTime = new Date(timeMatch[0]) // may need manual parse if format differs
+      }
     }
+
+    if (imageLat && imageLon) {
+      setLocation({
+        latitude: imageLat,
+        longitude: imageLon,
+        address: `${imageLat.toFixed(4)}, ${imageLon.toFixed(4)}`
+      })
+      console.log("📍 Image GPS:", imageLat, imageLon)
+
+      if (currentGps) {
+        // distance check
+        const distance = getDistance(
+          imageLat, imageLon,
+          currentGps.latitude, currentGps.longitude
+        )
+
+        // time check
+        const validTime = imageTime ? isWithin30Min(imageTime) : false
+
+        if (distance < 500 && validTime) {
+          setIsImageValid(true)
+          console.log("✅ Image valid")
+        } else {
+          setIsImageValid(false)
+          alert("⚠️ Location or time mismatch! Within 500m & 30min required.")
+        }
+      }
+    } else {
+      setIsImageValid(false)
+      alert("⚠️ No GPS data found in image, please enter manually.")
+    }
+  } catch (err) {
+    console.error("❌ File error:", err)
+    setIsImageValid(false)
+    alert("Could not process image.")
   }
 }
+
+
+
+
+
+
+
 
 
   const removeFile = (index: number) => {
@@ -232,6 +307,7 @@ export default function ReportPage() {
       </div>
     )
   }
+
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5">
@@ -385,6 +461,7 @@ export default function ReportPage() {
                     "Submit Report"
                   )}
                 </Button>
+
               </form>
             </CardContent>
           </Card>

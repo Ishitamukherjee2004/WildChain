@@ -53,42 +53,42 @@ export default function DashboardPage() {
     // Load reports from localStorage and add mock data
     const savedReports = JSON.parse(localStorage.getItem("wildchain_reports") || "[]")
     const mockReports: Report[] = [
-      {
-        id: "admin-1",
-        type: "WildAlert",
-        location: { latitude: 40.7128, longitude: -74.006, address: "Central Park, New York" },
-        description: "Injured bird spotted near the lake, appears to have wing damage",
-        timestamp: new Date(Date.now() - 3600000).toISOString(),
-        status: "rescued",
-        blockchainHash: "0x1234567890abcdef",
-        assignedTo: "Dr. Sarah Wilson",
-      },
-      {
-        id: "admin-2",
-        type: "PawChain",
-        location: { latitude: 40.7589, longitude: -73.9851, address: "Times Square, New York" },
-        description: "Stray dog showing signs of distress, needs immediate veterinary attention",
-        timestamp: new Date(Date.now() - 1800000).toISOString(),
-        status: "on-the-way",
-        blockchainHash: "0xabcdef1234567890",
-        assignedTo: "Animal Rescue Team Alpha",
-      },
-      {
-        id: "admin-3",
-        type: "AbuseReport",
-        location: { latitude: 40.7505, longitude: -73.9934, address: "Brooklyn Bridge, New York" },
-        description: "Suspected animal abuse case requiring immediate investigation",
-        timestamp: new Date(Date.now() - 900000).toISOString(),
-        status: "reported",
-        blockchainHash: "0x567890abcdef1234",
-      },
+      // {
+      //   id: "admin-1",
+      //   type: "WildAlert",
+      //   location: { latitude: 40.7128, longitude: -74.006, address: "Central Park, New York" },
+      //   description: "Injured bird spotted near the lake, appears to have wing damage",
+      //   timestamp: new Date(Date.now() - 3600000).toISOString(),
+      //   status: "rescued",
+      //   blockchainHash: "0x1234567890abcdef",
+      //   assignedTo: "Dr. Sarah Wilson",
+      // },
+      // {
+      //   id: "admin-2",
+      //   type: "PawChain",
+      //   location: { latitude: 40.7589, longitude: -73.9851, address: "Times Square, New York" },
+      //   description: "Stray dog showing signs of distress, needs immediate veterinary attention",
+      //   timestamp: new Date(Date.now() - 1800000).toISOString(),
+      //   status: "on-the-way",
+      //   blockchainHash: "0xabcdef1234567890",
+      //   assignedTo: "Animal Rescue Team Alpha",
+      // },
+      // {
+      //   id: "admin-3",
+      //   type: "AbuseReport",
+      //   location: { latitude: 40.7505, longitude: -73.9934, address: "Brooklyn Bridge, New York" },
+      //   description: "Suspected animal abuse case requiring immediate investigation",
+      //   timestamp: new Date(Date.now() - 900000).toISOString(),
+      //   status: "reported",
+      //   blockchainHash: "0x567890abcdef1234",
+      // },
     ]
 
     const mockVolunteers: Volunteer[] = [
       {
         id: "vol-1",
-        name: "Dr. Sarah Wilson",
-        location: "Manhattan, NY",
+        name: "Ishita Mukherjee",
+        location: "Kalyani",
         specialization: ["Wildlife Veterinary", "Bird Rescue"],
         availability: "available",
         responseTime: "15 min",
@@ -96,8 +96,8 @@ export default function DashboardPage() {
       },
       {
         id: "vol-2",
-        name: "Mike Rodriguez",
-        location: "Brooklyn, NY",
+        name: "Shatakshi Saha",
+        location: "Barrackpore",
         specialization: ["Large Animal Rescue", "Emergency Response"],
         availability: "busy",
         responseTime: "8 min",
@@ -105,21 +105,12 @@ export default function DashboardPage() {
       },
       {
         id: "vol-3",
-        name: "Animal Rescue Team Alpha",
-        location: "Queens, NY",
+        name: "Madhurima Khan",
+        location: "Kalyani",
         specialization: ["Stray Animals", "Urban Wildlife"],
         availability: "available",
         responseTime: "12 min",
         completedRescues: 134,
-      },
-      {
-        id: "vol-4",
-        name: "Lisa Chen",
-        location: "Bronx, NY",
-        specialization: ["Marine Wildlife", "Rehabilitation"],
-        availability: "offline",
-        responseTime: "25 min",
-        completedRescues: 28,
       },
     ]
 

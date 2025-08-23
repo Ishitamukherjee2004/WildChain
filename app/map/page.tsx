@@ -34,60 +34,7 @@ export default function MapPage() {
     const savedReports = JSON.parse(localStorage.getItem("wildchain_reports") || "[]")
 
     const mockReports: Report[] = [
-      {
-        id: "1",
-        type: "WildAlert",
-        location: { latitude: 40.7128, longitude: -74.006, address: "Central Park, New York" },
-        description: "Injured red-tailed hawk spotted near the lake",
-        timestamp: new Date(Date.now() - 3600000).toISOString(),
-        status: "rescued",
-        blockchainHash: "0x1234567890abcdef",
-      },
-      {
-        id: "2",
-        type: "PawChain",
-        location: { latitude: 40.7589, longitude: -73.9851, address: "Times Square, New York" },
-        description: "Golden retriever stray needs immediate attention",
-        timestamp: new Date(Date.now() - 1800000).toISOString(),
-        status: "on-the-way",
-        blockchainHash: "0xabcdef1234567890",
-      },
-      {
-        id: "3",
-        type: "AbuseReport",
-        location: { latitude: 40.7505, longitude: -73.9934, address: "Brooklyn Bridge, New York" },
-        description: "Suspected animal abuse case - urgent investigation needed",
-        timestamp: new Date(Date.now() - 900000).toISOString(),
-        status: "reported",
-        blockchainHash: "0x567890abcdef1234",
-      },
-      {
-        id: "4",
-        type: "EcoPath",
-        location: { latitude: 40.7282, longitude: -74.0776, address: "Liberty Island, New York" },
-        description: "Wildlife crossing needs monitoring - deer migration route",
-        timestamp: new Date(Date.now() - 7200000).toISOString(),
-        status: "rescued",
-        blockchainHash: "0xdef1234567890abc",
-      },
-      {
-        id: "5",
-        type: "StraySafe",
-        location: { latitude: 40.7614, longitude: -73.9776, address: "Central Park West, New York" },
-        description: "Orange tabby cat spotted - appears lost and hungry",
-        timestamp: new Date(Date.now() - 2700000).toISOString(),
-        status: "reported",
-        blockchainHash: "0x890abcdef1234567",
-      },
-      {
-        id: "6",
-        type: "WildAlert",
-        location: { latitude: 40.7831, longitude: -73.9712, address: "Upper East Side, New York" },
-        description: "Raccoon family trapped in building construction site",
-        timestamp: new Date(Date.now() - 5400000).toISOString(),
-        status: "on-the-way",
-        blockchainHash: "0xfedcba0987654321",
-      },
+      
     ]
 
     const allReports = [...mockReports, ...savedReports]
@@ -229,15 +176,21 @@ export default function MapPage() {
             `)
 
             // Add hover effects
-            marker.on("mouseover", function () {
-              this.getElement().style.transform = "scale(1.1)"
-              this.getElement().style.zIndex = "1000"
-            })
+            marker.on("mouseover", function (this: L.Marker) {
+  const el = this.getElement()
+  if (el) {
+    el.style.transform = "scale(1.1)"
+    el.style.zIndex = "1000"
+  }
+})
 
-            marker.on("mouseout", function () {
-              this.getElement().style.transform = "scale(1)"
-              this.getElement().style.zIndex = "auto"
-            })
+marker.on("mouseout", function (this: L.Marker) {
+  const el = this.getElement()
+  if (el) {
+    el.style.transform = "scale(1)"
+    el.style.zIndex = "auto"
+  }
+})
 
             // Add click event to select report
             marker.on("click", () => {
