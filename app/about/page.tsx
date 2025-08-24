@@ -74,15 +74,15 @@ export default function AboutPage() {
   ]
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5">
+    <div className="min-h-screen mx-[6%] bg-gradient-to-br from-background via-background to-primary/5">
       <Navbar />
 
       {/* Hero Section */}
       <section className="container py-24">
         <div className="text-center space-y-8 max-w-4xl mx-auto">
-          <Badge variant="outline" className="border-glow text-primary">
+          {/* <Badge variant="outline" className="border-glow text-primary">
             Powered by Blockchain Technology
-          </Badge>
+          </Badge> */}
 
           <h1 className="text-4xl md:text-6xl font-bold tracking-tight text-glow">
             Revolutionizing
@@ -91,8 +91,7 @@ export default function AboutPage() {
           </h1>
 
           <p className="text-xl md:text-2xl text-muted-foreground">
-            WildChain is the world's first blockchain-powered platform that connects communities, technology, and
-            conservation to create unprecedented transparency in wildlife protection.
+            WildChain is the world's first platform that connects communities, technology, and conservation for wildlife protection.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center">

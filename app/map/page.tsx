@@ -297,7 +297,7 @@ export default function MapPage() {
 
       <div className="container py-12">
         <div className="text-center space-y-4 mb-12">
-          <h1 className="text-3xl md:text-4xl font-bold text-glow text-neon-blue">Live Wildlife Map</h1>
+          <h1 className="text-3xl md:text-4xl font-bold text-neon-blue">Live Wildlife Map</h1>
           <p className="text-xl text-muted-foreground">Real-time tracking of wildlife reports and rescue operations</p>
         </div>
 
