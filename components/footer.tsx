@@ -4,7 +4,7 @@ import { Facebook, Twitter, Instagram, Github } from "lucide-react"
 export function Footer() {
   return (
     <footer className="border-t border-border/40 bg-background/95 backdrop-blur">
-      <div className="container py-12">
+      <div className="max-w-7xl mx-auto px-[5%] py-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div className="space-y-4">
             <div className="text-2xl font-bold text-glow">WildChain</div>
@@ -78,7 +78,7 @@ export function Footer() {
         </div>
 
         <div className="border-t border-border/40 mt-8 pt-8 text-center text-sm text-muted-foreground">
-          <p>&copy; 2024 WildChain. All rights reserved. Powered by blockchain technology.</p>
+          <p>&copy; 2025 WildChain. All rights reserved.</p>
         </div>
       </div>
     </footer>
