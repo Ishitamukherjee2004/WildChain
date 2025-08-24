@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useMemo } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -10,7 +10,24 @@ import { Navbar } from "@/components/navbar"
 import { Footer } from "@/components/footer"
 import { useAuth } from "@/components/auth-provider"
 import { useRouter } from "next/navigation"
-import { BarChart3, MapPin, CheckCircle, AlertTriangle, Users, Shield, Heart } from "lucide-react"
+import {
+  BarChart3,
+  MapPin,
+  CheckCircle,
+  AlertTriangle,
+  Users,
+  Shield,
+  Heart,
+} from "lucide-react"
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+} from "recharts"
 
 interface Report {
   id: string
@@ -50,39 +67,9 @@ export default function DashboardPage() {
       return
     }
 
-    // Load reports from localStorage and add mock data
     const savedReports = JSON.parse(localStorage.getItem("wildchain_reports") || "[]")
-    const mockReports: Report[] = [
-      // {
-      //   id: "admin-1",
-      //   type: "WildAlert",
-      //   location: { latitude: 40.7128, longitude: -74.006, address: "Central Park, New York" },
-      //   description: "Injured bird spotted near the lake, appears to have wing damage",
-      //   timestamp: new Date(Date.now() - 3600000).toISOString(),
-      //   status: "rescued",
-      //   blockchainHash: "0x1234567890abcdef",
-      //   assignedTo: "Dr. Sarah Wilson",
-      // },
-      // {
-      //   id: "admin-2",
-      //   type: "PawChain",
-      //   location: { latitude: 40.7589, longitude: -73.9851, address: "Times Square, New York" },
-      //   description: "Stray dog showing signs of distress, needs immediate veterinary attention",
-      //   timestamp: new Date(Date.now() - 1800000).toISOString(),
-      //   status: "on-the-way",
-      //   blockchainHash: "0xabcdef1234567890",
-      //   assignedTo: "Animal Rescue Team Alpha",
-      // },
-      // {
-      //   id: "admin-3",
-      //   type: "AbuseReport",
-      //   location: { latitude: 40.7505, longitude: -73.9934, address: "Brooklyn Bridge, New York" },
-      //   description: "Suspected animal abuse case requiring immediate investigation",
-      //   timestamp: new Date(Date.now() - 900000).toISOString(),
-      //   status: "reported",
-      //   blockchainHash: "0x567890abcdef1234",
-      // },
-    ]
+
+    const mockReports: Report[] = []
 
     const mockVolunteers: Volunteer[] = [
       {
@@ -119,10 +106,13 @@ export default function DashboardPage() {
   }, [isAuthenticated, userRole, router])
 
   const updateReportStatus = (reportId: string, newStatus: "reported" | "on-the-way" | "rescued") => {
-    setReports((prev) => prev.map((report) => (report.id === reportId ? { ...report, status: newStatus } : report)))
+    setReports((prev) =>
+      prev.map((report) => (report.id === reportId ? { ...report, status: newStatus } : report))
+    )
 
-    // Update localStorage
-    const updatedReports = reports.map((report) => (report.id === reportId ? { ...report, status: newStatus } : report))
+    const updatedReports = reports.map((report) =>
+      report.id === reportId ? { ...report, status: newStatus } : report
+    )
     localStorage.setItem("wildchain_reports", JSON.stringify(updatedReports.filter((r) => !r.id.startsWith("admin-"))))
   }
 
@@ -130,7 +120,7 @@ export default function DashboardPage() {
     const volunteer = volunteers.find((v) => v.id === volunteerId)
     if (volunteer) {
       setReports((prev) =>
-        prev.map((report) => (report.id === reportId ? { ...report, assignedTo: volunteer.name } : report)),
+        prev.map((report) => (report.id === reportId ? { ...report, assignedTo: volunteer.name } : report))
       )
     }
   }
@@ -182,6 +172,15 @@ export default function DashboardPage() {
   const onTheWayCount = reports.filter((r) => r.status === "on-the-way").length
   const rescuedCount = reports.filter((r) => r.status === "rescued").length
   const availableVolunteers = volunteers.filter((v) => v.availability === "available").length
+
+  // === Generate data for bar chart (category-wise report count) ===
+  const categoryData = useMemo(() => {
+    const counts: Record<string, number> = {}
+    reports.forEach((report) => {
+      counts[report.type] = (counts[report.type] || 0) + 1
+    })
+    return Object.entries(counts).map(([type, count]) => ({ type, count }))
+  }, [reports])
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5">
@@ -273,92 +272,27 @@ export default function DashboardPage() {
                 </Card>
               </div>
 
-              {/* Report Details */}
+              {/* Bar Chart for Categories */}
               <div>
-                {selectedReport ? (
-                  <Card className="border-glow bg-card/50 backdrop-blur">
-                    <CardHeader>
-                      <CardTitle className="flex items-center gap-2">
-                        {getTypeIcon(selectedReport.type)}
-                        Report Management
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                      <div>
-                        <h4 className="font-semibold text-sm text-muted-foreground">Status</h4>
-                        <Select
-                          value={selectedReport.status}
-                          onValueChange={(value: "reported" | "on-the-way" | "rescued") =>
-                            updateReportStatus(selectedReport.id, value)
-                          }
-                        >
-                          <SelectTrigger className="border-glow">
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="reported">Reported</SelectItem>
-                            <SelectItem value="on-the-way">On the Way</SelectItem>
-                            <SelectItem value="rescued">Rescued</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-
-                      <div>
-                        <h4 className="font-semibold text-sm text-muted-foreground">Assign Volunteer</h4>
-                        <Select
-                          value={selectedReport.assignedTo || ""}
-                          onValueChange={(value) => assignVolunteer(selectedReport.id, value)}
-                        >
-                          <SelectTrigger className="border-glow">
-                            <SelectValue placeholder="Select volunteer" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {volunteers
-                              .filter((v) => v.availability === "available")
-                              .map((volunteer) => (
-                                <SelectItem key={volunteer.id} value={volunteer.id}>
-                                  {volunteer.name} - {volunteer.responseTime}
-                                </SelectItem>
-                              ))}
-                          </SelectContent>
-                        </Select>
-                      </div>
-
-                      <div>
-                        <h4 className="font-semibold text-sm text-muted-foreground">Location</h4>
-                        <p className="text-sm">{selectedReport.location.address}</p>
-                      </div>
-
-                      <div>
-                        <h4 className="font-semibold text-sm text-muted-foreground">Description</h4>
-                        <p className="text-sm">{selectedReport.description}</p>
-                      </div>
-
-                      <div>
-                        <h4 className="font-semibold text-sm text-muted-foreground">Blockchain Hash</h4>
-                        <code className="text-xs font-mono break-all bg-muted/20 p-1 rounded">
-                          {selectedReport.blockchainHash}
-                        </code>
-                      </div>
-
-                      <Button
-                        onClick={() => updateReportStatus(selectedReport.id, "rescued")}
-                        className="w-full glow"
-                        disabled={selectedReport.status === "rescued"}
-                      >
-                        <CheckCircle className="h-4 w-4 mr-2" />
-                        Mark as Rescued
-                      </Button>
-                    </CardContent>
-                  </Card>
-                ) : (
-                  <Card className="border-glow bg-card/50 backdrop-blur">
-                    <CardContent className="p-12 text-center">
-                      <MapPin className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-                      <p className="text-muted-foreground">Select a report to manage</p>
-                    </CardContent>
-                  </Card>
-                )}
+                <Card className="border-glow bg-card/50 backdrop-blur">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <BarChart3 className="h-5 w-5" />
+                      Reports by Category
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="h-80">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <BarChart data={categoryData}>
+                        <CartesianGrid strokeDasharray="3 3" stroke="#444" />
+                        <XAxis dataKey="type" stroke="#888" />
+                        <YAxis allowDecimals={false} stroke="#888" />
+                        <Tooltip />
+                        <Bar dataKey="count" fill="#38bdf8" radius={[6, 6, 0, 0]} />
+                      </BarChart>
+                    </ResponsiveContainer>
+                  </CardContent>
+                </Card>
               </div>
             </div>
           </TabsContent>
