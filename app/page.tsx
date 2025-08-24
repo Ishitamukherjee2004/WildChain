@@ -11,19 +11,18 @@ import { MapPin, Shield, Heart, TrendingUp, Users, Globe, Eye} from "lucide-reac
 
 export default function HomePage() {
   const [stats, setStats] = useState({
-    reports: 312,
-    rescues: 45,
-    adoptions: 18,
-    volunteers: 1247,
+    reports: 14,
+    rescues: 0,
+    volunteers: 3,
   })
 
   // Animate stats counter
   useEffect(() => {
     const interval = setInterval(() => {
       setStats((prev) => ({
-        reports: prev.reports + Math.floor(Math.random() * 3),
+        reports: prev.reports,
         rescues: prev.rescues + (Math.random() > 0.8 ? 1 : 0),
-        adoptions: prev.adoptions + (Math.random() > 0.9 ? 1 : 0),
+        // adoptions: prev.adoptions + (Math.random() > 0.9 ? 1 : 0),
         volunteers: prev.volunteers + Math.floor(Math.random() * 2),
       }))
     }, 5000)
