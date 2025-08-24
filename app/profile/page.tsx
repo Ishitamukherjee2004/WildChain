@@ -264,7 +264,7 @@ export default function ProfilePage() {
             )}
 
             {/* Adoption Certificates */}
-            {certificates.length > 0 && (
+            {/* {certificates.length > 0 && (
               <Card className="border-glow bg-card/50 backdrop-blur">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
@@ -300,7 +300,7 @@ export default function ProfilePage() {
                   ))}
                 </CardContent>
               </Card>
-            )}
+            )} */}
 
             {/* Recent Reports */}
             {reports.length > 0 && (

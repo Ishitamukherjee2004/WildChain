@@ -188,7 +188,7 @@ export default function DashboardPage() {
 
       <div className="container py-12">
         <div className="text-center space-y-4 mb-12">
-          <h1 className="text-3xl md:text-4xl font-bold text-glow">Admin Dashboard</h1>
+          <h1 className="text-3xl md:text-4xl font-bold text-glow"> Dashboard</h1>
           <p className="text-xl text-muted-foreground">Manage wildlife reports and coordinate rescue operations</p>
         </div>
 

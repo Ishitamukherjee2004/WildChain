@@ -24,7 +24,24 @@ interface LocationData {
   longitude: number
   address: string
 }
+function getDistance(lat1: number, lon1: number, lat2: number, lon2: number) {
+  const R = 6371e3
+  const φ1 = lat1 * Math.PI/180
+  const φ2 = lat2 * Math.PI/180
+  const Δφ = (lat2-lat1) * Math.PI/180
+  const Δλ = (lon2-lon1) * Math.PI/180
+  const a = Math.sin(Δφ/2) * Math.sin(Δφ/2) +
+            Math.cos(φ1) * Math.cos(φ2) *
+            Math.sin(Δλ/2) * Math.sin(Δλ/2)
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a))
+  return R * c // meters
+}
 
+function isWithin30Min(imageTime: Date) {
+  const now = new Date()
+  const diffMs = Math.abs(now.getTime() - imageTime.getTime())
+  return diffMs / (1000 * 60) <= 30
+}
 export default function ReportPage() {
   const [reportType, setReportType] = useState<ReportType>("WildAlert")
   const [location, setLocation] = useState<LocationData | null>(null)
@@ -40,7 +57,7 @@ export default function ReportPage() {
   const [isGenerating, setIsGenerating] = useState(false)
   const [isImageValid, setIsImageValid] = useState(false)
   const [currentGps, setCurrentGps] = useState<{ latitude: number; longitude: number } | null>(null)
-
+  const [isAnimal, setIsAnimal] = useState(false)
   const reportTypeDescriptions = {
     WildAlert: "Report wildlife in immediate danger or distress",
     PawChain: "Report stray animals needing rescue or care",
@@ -128,24 +145,6 @@ export default function ReportPage() {
     setDescription(descriptions[type])
   }
 
-function getDistance(lat1: number, lon1: number, lat2: number, lon2: number) {
-  const R = 6371e3
-  const φ1 = lat1 * Math.PI/180
-  const φ2 = lat2 * Math.PI/180
-  const Δφ = (lat2-lat1) * Math.PI/180
-  const Δλ = (lon2-lon1) * Math.PI/180
-  const a = Math.sin(Δφ/2) * Math.sin(Δφ/2) +
-            Math.cos(φ1) * Math.cos(φ2) *
-            Math.sin(Δλ/2) * Math.sin(Δλ/2)
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a))
-  return R * c // meters
-}
-
-function isWithin30Min(imageTime: Date) {
-  const now = new Date()
-  const diffMs = Math.abs(now.getTime() - imageTime.getTime())
-  return diffMs / (1000 * 60) <= 30
-}
 // inside ReportPage:
 const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
   if (!e.target.files) return
@@ -222,6 +221,35 @@ const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
 
 
 
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedFile = e.target.files?.[0];
+    if (!selectedFile) return;
+
+    setFiles([selectedFile])   // Wrap the file inside an array
+
+
+    // Convert image to base64
+    const reader = new FileReader();
+    reader.onloadend = async () => {
+      const base64 = (reader.result as string).split(",")[1];
+
+      // Send to API for validation
+      const res = await fetch("/api/validate-image", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ imageBase64: base64 }),
+      });
+
+      const data = await res.json();
+      if (data.isAnimal) {
+        setIsAnimal(true);
+      } else {
+        setIsAnimal(false);
+        alert("This image does not seem to contain an animal.");
+      }
+    };
+    reader.readAsDataURL(selectedFile);
+  };
 
 
 
