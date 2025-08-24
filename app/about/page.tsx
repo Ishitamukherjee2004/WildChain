@@ -45,12 +45,12 @@ export default function AboutPage() {
     },
   ]
 
-  const stats = [
-    { number: "10,000+", label: "Animals Protected" },
-    { number: "500+", label: "Active Volunteers" },
-    { number: "50+", label: "Partner NGOs" },
-    { number: "$2M+", label: "Funds Raised" },
-  ]
+  // const stats = [
+  //   { number: "10,000+", label: "Animals Protected" },
+  //   { number: "500+", label: "Active Volunteers" },
+  //   { number: "50+", label: "Partner NGOs" },
+  //   { number: "$2M+", label: "Funds Raised" },
+  // ]
 
   const whyBlockchain = [
     {
@@ -105,110 +105,6 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Stats Section */}
-      <section className="container py-16">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-          {stats.map((stat, index) => (
-            <Card key={index} className="border-glow bg-card/50 backdrop-blur text-center">
-              <CardContent className="p-6">
-                <div className="text-3xl md:text-4xl font-bold text-primary text-glow mb-2">{stat.number}</div>
-                <div className="text-sm text-muted-foreground">{stat.label}</div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      </section>
-
-      {/* Mission Section */}
-      <section className="container py-16">
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
-          <div className="space-y-6">
-            <h2 className="text-3xl md:text-4xl font-bold text-glow">Our Mission</h2>
-            <p className="text-lg text-muted-foreground">
-              We believe that wildlife protection should be transparent, accessible, and community-driven. Traditional
-              conservation efforts often lack accountability and struggle with funding transparency.
-            </p>
-            <p className="text-lg text-muted-foreground">
-              WildChain solves these problems by leveraging blockchain technology to create an immutable record of every
-              rescue, adoption, and conservation effort. Our platform empowers individuals worldwide to make a direct,
-              verifiable impact on wildlife protection.
-            </p>
-            <div className="flex items-center gap-4">
-              <CheckCircle className="h-5 w-5 text-accent" />
-              <span>Transparent fund allocation</span>
-            </div>
-            <div className="flex items-center gap-4">
-              <CheckCircle className="h-5 w-5 text-accent" />
-              <span>Verifiable impact certificates</span>
-            </div>
-            <div className="flex items-center gap-4">
-              <CheckCircle className="h-5 w-5 text-accent" />
-              <span>Global community coordination</span>
-            </div>
-          </div>
-
-          <Card className="border-glow bg-card/50 backdrop-blur">
-            <CardContent className="p-8">
-              <img
-                src="/placeholder.svg?height=400&width=500&text=Wildlife+Conservation"
-                alt="Wildlife Conservation"
-                className="w-full h-64 object-cover rounded-lg mb-6"
-              />
-              <h3 className="text-xl font-bold mb-4">Founded on Trust</h3>
-              <p className="text-muted-foreground">
-                Started by a team of conservationists and blockchain developers who witnessed the lack of transparency
-                in traditional wildlife protection funding.
-              </p>
-            </CardContent>
-          </Card>
-        </div>
-      </section>
-
-      {/* Why Blockchain Section */}
-      <section className="container py-16">
-        <div className="text-center space-y-4 mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold text-glow">Why Blockchain?</h2>
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-            Blockchain technology brings unprecedented transparency and trust to wildlife conservation
-          </p>
-        </div>
-
-        <div className="grid md:grid-cols-2 gap-8">
-          {whyBlockchain.map((item, index) => (
-            <Card key={index} className="border-glow bg-card/50 backdrop-blur">
-              <CardContent className="p-6">
-                <h3 className="text-lg font-semibold mb-3">{item.title}</h3>
-                <p className="text-muted-foreground">{item.description}</p>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      </section>
-
-      {/* Features Section */}
-      <section className="container py-16">
-        <div className="text-center space-y-4 mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold text-glow">Platform Features</h2>
-          <p className="text-xl text-muted-foreground">
-            Cutting-edge technology meets conservation in our comprehensive platform
-          </p>
-        </div>
-
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {features.map((feature, index) => (
-            <Card key={index} className="border-glow bg-card/50 backdrop-blur text-center">
-              <CardContent className="p-6 space-y-4">
-                <div className="w-12 h-12 mx-auto bg-primary/20 rounded-full flex items-center justify-center glow">
-                  {feature.icon}
-                </div>
-                <h3 className="text-lg font-semibold">{feature.title}</h3>
-                <p className="text-sm text-muted-foreground">{feature.description}</p>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      </section>
-
       {/* How It Works Section */}
       <section className="container py-16">
         <div className="text-center space-y-4 mb-12">
@@ -219,12 +115,28 @@ export default function AboutPage() {
         <div className="grid md:grid-cols-3 gap-8">
           <Card className="border-glow bg-card/50 backdrop-blur text-center">
             <CardContent className="p-8 space-y-4">
-              <div className="w-16 h-16 mx-auto bg-red-500/20 rounded-full flex items-center justify-center glow">
-                <span className="text-2xl font-bold text-red-400">1</span>
-              </div>
+              
               <h3 className="text-xl font-semibold">Report & Alert</h3>
               <p className="text-muted-foreground">
-                Community members report wildlife emergencies through our platform, creating blockchain-verified alerts
+                -Open the Wildlife Rescue App (frontend).
+
+-Navigate to the Report Page (where they can submit reports).
+
+-Fill in the required details:
+
+📍 Location (auto-detected or entered manually).
+
+🐾 Type of incident (wildlife alert, abuse report, stray rescue, etc.).
+
+📝 Short description of the situation.
+
+📸 (Optional) Upload an image or evidence.
+
+-Submit the report → this triggers:
+
+-Report gets stored in the backend / blockchain.
+
+-A WebSocket event is sent immediately to all connected admins.
               </p>
             </CardContent>
           </Card>
@@ -309,30 +221,6 @@ export default function AboutPage() {
               </ul>
               <Button variant="outline" className="w-full border-glow bg-transparent">
                 Partner With Us
-                <ArrowRight className="h-4 w-4 ml-2" />
-              </Button>
-            </CardContent>
-          </Card>
-
-          <Card className="border-glow bg-card/50 backdrop-blur">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <DollarSign className="h-5 w-5" />
-                Support as Donor
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <p className="text-muted-foreground">
-                Make direct, transparent contributions to wildlife protection with blockchain-verified impact tracking.
-              </p>
-              <ul className="space-y-2 text-sm text-muted-foreground">
-                <li>• 100% transparent fund allocation</li>
-                <li>• Blockchain-verified impact certificates</li>
-                <li>• Direct animal sponsorship options</li>
-                <li>• Real-time progress tracking</li>
-              </ul>
-              <Button variant="outline" className="w-full border-glow bg-transparent">
-                Start Donating
                 <ArrowRight className="h-4 w-4 ml-2" />
               </Button>
             </CardContent>
