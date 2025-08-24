@@ -86,7 +86,7 @@ export default function HomePage() {
       {/* Live Stats */}
       <section className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl py-12 lg:py-16">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8 place-items-center">
-          <Card className="border-glow bg-card/50 backdrop-blur hover:bg-card/70 hover:scale-105 transition-all duration-300">
+          {/*<Card className="border-glow bg-card/50 backdrop-blur hover:bg-card/70 hover:scale-105 transition-all duration-300">
             <CardContent className="p-4 sm:p-6 text-center">
               <div className="text-2xl sm:text-3xl lg:text-4xl font-bold text-primary text-glow">{stats.reports}</div>
               <div className="text-xs sm:text-sm text-muted-foreground mt-1">Reports Submitted</div>
@@ -107,7 +107,7 @@ export default function HomePage() {
               </div>
               <div className="text-xs sm:text-sm text-muted-foreground mt-1">Active Volunteers</div>
             </CardContent>
-          </Card>
+          </Card>*/}
 
           {/* <Card className="border-glow bg-card/50 backdrop-blur hover:bg-card/70 hover:scale-105 transition-all duration-300">
             <CardContent className="p-4 sm:p-6 text-center">
